@@ -1,0 +1,21 @@
+{
+  "user": {
+    "name": "deploy",
+    "password": "$1$MBM6A9/B$GTF7/aCar7bM0iBiBj12Q1"
+  },
+
+  "app": {
+    "name": "discourse",
+    "url": "community.customer.io"
+  },
+
+  "run_list": [ "recipe[main]"],
+
+  "postgresql": {
+    "password": {
+      "postgres": "iloverandompasswordsbutthiswilldo"
+    }
+  },
+  "run_list": ["recipe[postgresql::server]"]
+
+}
