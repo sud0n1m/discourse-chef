@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+#^syntax detection
+
+site 'http://community.opscode.com/api/v1'
+
+cookbook "ntp"
+
+cookbook 'nginx',
+  :git => 'https://github.com/opscode-cookbooks/nginx.git'
+
+cookbook 'postgresql',
+  :git => 'https://github.com/opscode-cookbooks/postgresql.git'
+  
+cookbook 'redis'
+
+cookbook 'main',
+  :path => 'vendor/cookbooks/main'
+
+
