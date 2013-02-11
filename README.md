@@ -33,7 +33,7 @@ You should see a lot of output as things are being installed. This may take 5 - 
 
 ### 5. Now the last mile is up to you...
 
-This is as far as I have got... what you have now is:
+This is as far as I got... what you have now is:
 
 * Redis
 * Postgresql
