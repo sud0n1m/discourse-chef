@@ -1,21 +1,39 @@
 {
   "user": {
     "name": "deploy",
-    "password": "$1$MBM6A9/B$GTF7/aCar7bM0iBiBj12Q1"
+    "password": "iloverandompasswordsbutthiswilldo"
   },
 
   "app": {
     "name": "discourse",
-    "url": "community.customer.io"
+    "url": "yourdiscourseserver.com"
   },
 
-  "run_list": [ "recipe[main]"],
+  "run_list": [  "recipe[ruby_build]", "recipe[main]"],
 
   "postgresql": {
+    "users": [
+      {
+        "username": "deploy",
+        "password": "iloverandompasswordsbutthiswilldo",
+        "superuser": false,
+        "createdb": false,
+        "login": true
+      }
+    ],
+
+    "databases": [
+    {
+      "name": "discourse",
+      "owner": "deploy",
+      "template": "template0",
+      "encoding": "utf8",
+      "locale": "en_US.UTF8",
+      "extensions": "hstore"
+      }
+    ],
     "password": {
       "postgres": "iloverandompasswordsbutthiswilldo"
     }
-  },
-  "run_list": ["recipe[postgresql::server]"]
-
+  }
 }
