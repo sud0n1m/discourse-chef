@@ -1,3 +1,5 @@
 depends "nginx"
 depends "postgresql"
 depends "redis"
+depends "ruby_build"
+depends "rbenv"

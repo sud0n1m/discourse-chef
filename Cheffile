@@ -9,9 +9,15 @@ cookbook 'nginx',
   :git => 'https://github.com/opscode-cookbooks/nginx.git'
 
 cookbook 'postgresql',
-  :git => 'https://github.com/opscode-cookbooks/postgresql.git'
+  :git => 'https://github.com/phlipper/chef-postgresql'
   
-cookbook 'redis'
+cookbook 'redis',
+  :git => 'https://github.com/ctrabold/chef-redis'
+
+cookbook 'rbenv',
+  :git => 'https://github.com/fnichol/chef-rbenv'
+
+cookbook 'ruby_build'
 
 cookbook 'main',
   :path => 'vendor/cookbooks/main'

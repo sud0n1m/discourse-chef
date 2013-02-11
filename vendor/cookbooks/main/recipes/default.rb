@@ -1,13 +1,10 @@
-package "git-core" # apt-get install git-core
+# Note that all external recipes required in here also need to be in metadata.rb
+
+package "git-core"
 package "zsh"
 package "vim"
 
-# Note that all recipes in here also need to be in metadata.rb
-include_recipe "redis::default"
-
-## REDIS FAILED TO INSTALL WITH THIS. DID IT MANUALLY
-## apt-get install redis-server
-
+########### SET UP USER ###########
 
 user node[:user][:name] do
   password node[:user][:password]
@@ -22,12 +19,25 @@ template "/home/#{node[:user][:name]}/.zshrc" do
   owner node[:user][:name]
 end
 
+############ RUBY ##################
+
+# You MUST put this before the recipe is included.
+node.default['rbenv']['rubies'] = ["1.9.3-p385"]
+
+include_recipe "rbenv::system"
+
+
+########### REDIS ################
+
+include_recipe "redis::source"
 
 ######## POSTGRES #############
 
+package "postgresql-contrib-9.2"
+
 include_recipe "postgresql::server"
 
-package "postgresql-contrib"
+## User and database is created in Node.json
 
 ########### NGINX ############
 
@@ -38,35 +48,11 @@ directory "/home/#{node[:user][:name]}/#{node[:app][:name]}" do
   owner node[:user][:name]
 end
 
-file "/home/#{node[:user][:name]}/#{node[:app][:name]}/current/index.html" do
-  owner node[:user][:name]
-  content "<h1>Hello World!</h1>"
-end
-
 template "#{node[:nginx][:dir]}/sites-available/#{node[:app][:name]}" do
   source "discourse-nginx.erb"
 end
 
 nginx_site "#{node[:app][:name]}"
-
-
-########### DEPLOY #############
-
-# deploy "/home/#{node[:user][:name]}/#{node[:app][:name]}" do
-#   repo "https://github.com/discourse/discourse.git"
-#   revision "HEAD" # or "HEAD" or "TAG_for_1.0" or (subversion) "1234"
-#   user "deploy_ninja"
-#   #enable_submodules true
-#   migrate true
-#   migration_command "rake db:migrate"
-#   environment "RAILS_ENV" => "production", "OTHER_ENV" => "foo"
-#   shallow_clone true
-#   action :deploy # or :rollback
-#   restart_command "touch tmp/restart.txt"
-#   git_ssh_wrapper "wrap-ssh4git.sh"
-#   scm_provider Chef::Provider::Git # is the default, for svn: Chef::Provider::Subversion
-# end
-
 
 ########### RESTART NGINX ########
 
@@ -76,15 +62,10 @@ service "nginx" do
 end
 
 
-
-# Install bundler
-# gem install bundler
-
 # check out the source
 # git clone https://github.com/discourse/discourse.git .
 
 # bundle install
-# rake db:create
 # rake db:migrate
 # rake db:seed_fu
 # redis-cli flushall
