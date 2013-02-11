@@ -4,22 +4,24 @@ Clone this repo:
 
     git clone https://github.com/sud0n1m/discourse-chef
 
-Change the password and server name in the file `Node.json`
+### 1. Get librarian chef and the packages installed
 
-### 1. Installing
+On your local machine:
 
-Spin up your new VPS running Ubuntu 12.10. Run the commands in `bootstrap.sh`
-
-### 2. Get the packages
-
+    cd discourse-chef
     gem install librarian-chef
     librarian-chef install
 
-### 3. Rsync them to your server
-  
-From the discourse-chef directory (make sure to replace yourserver with an ip for your server):
+### 2. Bootstrap your server
 
-    rsync -r . root@yourserver:/var/chef       
+    rsync -r . root@yourserver:/var/chef
+    ssh root@yourserver "sh /var/chef/bootstrap.sh" 
+
+### 3. Tweak the settings
+  
+Change the password and server name in the `node.json` file. Then sync the changes
+
+    rsync -r . root@yourserver:/var/chef
   
 ### 4. Run chef solo
 
