@@ -1,3 +1,5 @@
+This collection of chef recipes should help you get bootstrap a VPS to run (https://github.com/discourse/discourse). Start with a blank Ubuntu 12.10 VPS.
+
 ## Gets you mostly there...
 
 Clone this repo:
