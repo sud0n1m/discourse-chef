@@ -1,11 +1,12 @@
 {
   "user": {
     "name": "deploy",
-    "password": "iloverandompasswordsbutthiswilldo"
+    "password": "$1$Uwu5JGEE$xYilDSwWmFepSvsBLRzli0" // openssl passwd -1 "password"
   },
 
   "app": {
     "name": "discourse",
+    "path": "/web/discourse",
     "url": "yourdiscourseserver.com"
   },
 
