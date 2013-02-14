@@ -4,6 +4,8 @@ package "git-core"
 package "zsh"
 package "vim"
 
+gem_package "bundler"
+
 ########### SET UP USER ###########
 
 user node[:user][:name] do
@@ -17,6 +19,31 @@ end
 template "/home/#{node[:user][:name]}/.zshrc" do
   source "zshrc.erb"
   owner node[:user][:name]
+end
+
+########### SET UP APP DIRECTORY ###########
+
+directory node[:app][:path] do
+  owner "deploy"
+  recursive true
+  mode 0755
+end
+
+directory node[:app][:path]+"/shared" do
+  owner "deploy"
+end
+
+directory node[:app][:path]+"/releases" do
+  owner "deploy"
+end
+
+
+%w(config log tmp sockets pids).each do |dir|
+  directory "#{node[:app][:path]}/shared/#{dir}" do
+    owner "deploy"
+    recursive true
+    mode 0755
+  end
 end
 
 ############ RUBY ##################
@@ -34,6 +61,8 @@ include_recipe "redis::source"
 ######## POSTGRES #############
 
 package "postgresql-contrib-9.2"
+
+package "postgresql-server-dev-9.2"
 
 include_recipe "postgresql::server"
 
