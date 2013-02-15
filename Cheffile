@@ -8,14 +8,16 @@ cookbook "ntp"
 cookbook 'nginx',
   :git => 'https://github.com/opscode-cookbooks/nginx.git'
 
-cookbook 'postgresql',
-  :git => 'https://github.com/phlipper/chef-postgresql'
+cookbook 'postgresql'
+
+cookbook 'database'
   
 cookbook 'redis',
   :git => 'https://github.com/ctrabold/chef-redis'
 
-cookbook 'rbenv',
-  :git => 'https://github.com/fnichol/chef-rbenv'
+cookbook 'rbenv'
+
+cookbook 'bluepill'
 
 cookbook 'ruby_build'
 
