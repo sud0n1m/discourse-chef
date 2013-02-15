@@ -4,16 +4,32 @@ package "git-core"
 package "zsh"
 package "vim"
 
+############ RUBY ##################
+
+include_recipe "rbenv::default"
+include_recipe "rbenv::ruby_build"
+rbenv_ruby "1.9.3-p385"
+
+############ GEMS ###################
+
 gem_package "bundler"
+gem_package "bluepill"
 
 ########### SET UP USER ###########
 
 user node[:user][:name] do
   password node[:user][:password]
-  gid "sudo"  
+  gid "sudo"
   home "/home/#{node[:user][:name]}"
   supports manage_home: true
   shell "/bin/zsh"
+end
+
+template "/etc/sudoers" do
+  source "sudoers.erb"
+  mode 0440
+  owner "root"
+  group "root"
 end
 
 template "/home/#{node[:user][:name]}/.zshrc" do
@@ -46,27 +62,51 @@ end
   end
 end
 
-############ RUBY ##################
-
-# You MUST put this before the recipe is included.
-node.default['rbenv']['rubies'] = ["1.9.3-p385"]
-
-include_recipe "rbenv::system"
-
-
 ########### REDIS ################
 
 include_recipe "redis::source"
 
 ######## POSTGRES #############
 
-package "postgresql-contrib-9.2"
+package "postgresql-contrib-9.1"
 
-package "postgresql-server-dev-9.2"
+package "postgresql-server-dev-9.1"
 
 include_recipe "postgresql::server"
 
-## User and database is created in Node.json
+include_recipe "database::postgresql"
+
+postgresql_connection_info = {:host => "127.0.0.1",
+                              :port => node['postgresql']['config']['port'],
+                              :username => 'postgres',
+                              :password => node['postgresql']['password']['postgres']}
+
+postgresql_database 'discourse' do
+  connection postgresql_connection_info
+  action :create
+end
+
+postgresql_database_user "deploy" do
+  connection postgresql_connection_info
+  password "yoursecurepassword"
+  template 'template0'
+  encoding "utf8"
+  action :create
+end
+
+# Add hstore
+postgresql_database 'discourse' do
+  connection postgresql_connection_info
+  sql "CREATE EXTENSION hstore;"
+  action :query
+end
+
+postgresql_database_user "deploy" do
+  connection postgresql_connection_info
+  database_name 'discourse'
+  privileges [:all]
+  action :grant
+end
 
 ########### NGINX ############
 

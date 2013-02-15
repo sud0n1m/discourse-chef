@@ -1,5 +1,8 @@
 upstream discourse {
-  server 127.0.0.1:3000;
+  server 127.0.0.1:9040;
+  server 127.0.0.1:9041;
+  server 127.0.0.1:9042;
+  server 127.0.0.1:9043;
 }
 
 server {
@@ -9,7 +12,7 @@ server {
   gzip_min_length 1000;
   gzip_types application/json text/css application/x-javascript;
 
-  server_name <%= node[:app][:url] %>;
+  server_name <%= node[:app][:url] %> www.<%= node[:app][:url] %> beta.<%= node[:app][:url] %>;
   
   sendfile on;
 
