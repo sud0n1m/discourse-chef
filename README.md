@@ -11,7 +11,7 @@ Clone this repo:
 On your local machine:
 
     cd discourse-chef
-    gem install librarian-chef
+    gem install librarian
     librarian-chef install
 
 ### 2. Bootstrap your server
