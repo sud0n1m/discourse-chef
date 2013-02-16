@@ -1,0 +1,22 @@
+{
+  "user": {
+    "name": "deploy",
+    "password": "$1$bFOcST7k$oK4j5CGnjZy5SOgPCGWoU1" //openssl passwd -1 "password"
+  },
+
+  "app": {
+    "name": "discourse",
+    "path": "/web/discourse",
+    "url": "yourserver.com"
+  },
+
+  "run_list": [  "recipe[ruby_build]", "recipe[main]"],
+
+  "postgresql": {
+    "version": "9.1",
+    "password": {
+      "postgres": "YourPassword",
+      "deploy": "YourPassword"
+    }
+  }
+}
