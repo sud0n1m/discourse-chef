@@ -95,13 +95,13 @@ postgresql_database_user "deploy" do
 end
 
 # Add hstore
-postgresql_database "deploy" do
+postgresql_database "discourse" do
   connection postgresql_connection_info
   sql "CREATE EXTENSION hstore;"
   action :query
 end
 
-postgresql_database_user "discourse" do
+postgresql_database_user "deploy" do
   connection postgresql_connection_info
   database_name 'discourse'
   privileges [:all]
