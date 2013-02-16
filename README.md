@@ -1,6 +1,6 @@
 This collection of chef recipes should help you get bootstrap a VPS to run (https://github.com/discourse/discourse). Start with a blank Ubuntu 12.10 VPS.
 
-## Gets you mostly there...
+## Gets you a working server ready to cap deploy discourse.
 
 Clone this repo:
 
@@ -16,31 +16,50 @@ On your local machine:
 
 ### 2. Bootstrap your server
 
-    rsync -r . root@yourserver:/var/chef
-    ssh root@yourserver "sh /var/chef/bootstrap.sh" 
+    SERVER="yourdomain.com"
 
-### 3. Tweak the settings
-  
-Change the password and server name in the `node.json` file. Then sync the changes
+    # Install Instructions
 
-    rsync -r . root@yourserver:/var/chef
-  
-### 4. Run chef solo
+    # enter your password once and never again
+    ssh-copy-id root@$SERVER
 
-    ssh root@yourserver "chef-solo -c /var/chef/solo.rb"
-    
-You should see a lot of output as things are being installed. This may take 5 - 10 minutes.
+    # Copy the bootstrap file and run it
+    rsync -r . root@$SERVER:/var/chef && ssh root@$SERVER "sh /var/chef/bootstrap.sh"
 
-### 5. Now the last mile is up to you...
+    # Install chef services
+    librarian-chef install && rsync -r . root@$SERVER:/var/chef && ssh root@$SERVER "chef-solo -c /var/chef/solo.rb"
 
-This is as far as I got... what you have now is:
+    # Copy the deploy user to the server
+    ssh-copy-id deploy@$SERVER
 
-* Redis
-* Postgresql
-** A database called "discourse"
-** A user called deploy with rights on the database
-* Nginx
-** A configuration proxying a single thin server on port 3000
-* A user named "deploy" with a password you set in `Node.json`
+    # From the discourse directory, run capistrano
+    # Here's an example.
+    # https://gist.github.com/sud0n1m/4953154
 
-You'll need to get the application server running, run the commands to migrate and seed the database and figure out a good deploy process, but there servers there.
+    cap deploy 
+
+    # If hstore doesn't work
+
+    ssh deploy@$SERVER
+    sudo su postgres
+    psql -d discourse
+    CREATE EXTENSION hstore;
+    \q
+    exit
+
+    # Migrate the database to set it up
+    cd /web/discourse/current
+    bundle exec rake db:migrate
+
+    # Log in and create your first user!
+    # Then go and make them an admin
+
+    ssh deploy@$SERVER1
+    cd /web/discourse/current
+    bundle exec rails c
+
+    u = User.first
+    u.admin = true
+    u.save
+
+    exit

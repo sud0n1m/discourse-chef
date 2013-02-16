@@ -88,20 +88,20 @@ end
 
 postgresql_database_user "deploy" do
   connection postgresql_connection_info
-  password "yoursecurepassword"
+  password node['postgresql']['password']['deploy']
   template 'template0'
   encoding "utf8"
   action :create
 end
 
 # Add hstore
-postgresql_database 'discourse' do
+postgresql_database "deploy" do
   connection postgresql_connection_info
   sql "CREATE EXTENSION hstore;"
   action :query
 end
 
-postgresql_database_user "deploy" do
+postgresql_database_user "discourse" do
   connection postgresql_connection_info
   database_name 'discourse'
   privileges [:all]
@@ -129,13 +129,3 @@ service "nginx" do
   supports :status => true, :restart => true, :reload => true
   action [ :enable, :start, :reload ]
 end
-
-
-# check out the source
-# git clone https://github.com/discourse/discourse.git .
-
-# bundle install
-# rake db:migrate
-# rake db:seed_fu
-# redis-cli flushall
-# thin start 
