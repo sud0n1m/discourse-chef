@@ -1,0 +1,1 @@
+node.default[:redis][:source][:version] = "2.6.10"
